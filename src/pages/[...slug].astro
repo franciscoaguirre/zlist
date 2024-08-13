@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/main.astro';
+import { getArticles } from '../articles.ts';
+import { toKebabCase } from '../utils.ts';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+
+  return articles.map((article) => ({
+    params: { slug: toKebabCase(article.title) },
+    props: { article: article },
+  }));
+}
+
+const { article } = Astro.props;
+---
+
+<Layout>
+  <h1>{article.title}</h1>
+  <div set:html={article['content:encoded']}></div>
+</Layout>
